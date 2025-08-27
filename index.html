@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlen raten</title>
+    <meta name="description" content="Errate die geheime Zahl zwischen 1 und 100 in diesem einfachen und unterhaltsamen Minispiel. Teste dein Glück und deine Logik, um die richtige Zahl in möglichst wenigen Versuchen zu finden!">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav>
+            <a href="../../index.html" class="nav-logo">Zurück zur Startseite</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Zahlenraten</h1>
+        <p>Errate meine Zahl zwischen 1 und 100!</p>
+
+        <div class="container">
+            <input type="number" id="guess-input">
+            <button id="guess-button" class="btn">Ich rate!</button>
+            <p id="guess-info"></p>
+        </div>
+
+        <div class="container">
+            <ul id="message-list"></ul>
+        </div>
+
+        <div class="container">
+            <button id="new-game" class="btn-dark">Neues Spiel</button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Frederik Anspach</p>
+        </div>
+    </footer>
+    
+    <script>
+        // DOM-Elemente auswählen
+        const guessNumber = document.getElementById('guess-input');
+        const guessButton = document.getElementById('guess-button');
+        const guessInfo = document.getElementById("guess-info");
+        const messageList = document.getElementById("message-list");
+        const newGame = document.getElementById('new-game');
+        
+        // Möglichkeit schaffen den handleEnter nach dem Sieg zu deaktivieren
+        const handleEnter = (event) => {
+          if (event.key === 'Enter') {
+            testNumber(guessNumber);
+          }
+        };
+    
+        // Versuchszähler
+        let count = 0;
+        let meldung = "";
+    
+        // Zufällige Zahl erzeugen
+        const randomNumber = Math.floor(Math.random() *100)+1;
+    
+        // Zahl kontrollieren
+        function testNumber(inputElement) {
+          // Zahl in ein Init wandeln
+          const inputElementValue = parseInt(inputElement.value);
+          //parseInt(randomNumber);
+          count++;
+    
+          if (inputElementValue >= 1 && inputElementValue <= 100) {
+            // Prüfe ob die Zahl richtig geraten wurde
+            if (inputElementValue === randomNumber){
+              meldung = `Jaaa, gewonnen! Die Zahl war ${randomNumber} und du hast ${count} Versuche gebraucht.`;
+              guessButton.disabled = true;
+              inputElement.disabled = true;
+              inputElement.removeEventListener('keypress', handleEnter); // Entferne den Listener hier
+    
+            // Prüfe ob die geratene Zahl zu hoch ist
+            } else if (inputElementValue > randomNumber) {
+              meldung = "Du musst niedriger raten!";
+              
+            // Prüfe ob die geratene Zahl zu niedrig ist
+            } else if (inputElementValue < randomNumber) {
+              meldung = "Du muss höher raten!";
+    
+            // Fang alles andere ab, was nicht passieren sollte
+            } else {
+              meldung = "Ich weiß nicht was los ist?!?";
+            }
+          } else {
+            meldung = "Gib eine gültige Zahl von 1-100 ein!";
+          }
+          // Schreibe die Meldung, wie weitergeraten werden soll
+          guessInfo.textContent = (meldung);
+    
+          // Schreibe die Versuche auf
+          const neuesListElement = document.createElement('li');
+          neuesListElement.textContent = `Versuch ${count}: ${inputElementValue}`;
+          neuesListElement.className = 'dynamischer-text';
+          messageList.appendChild(neuesListElement);
+    
+          // Eingabefeld leeren
+          inputElement.value = '';
+          // Eingabefeld fokussieren
+          inputElement.focus();
+        }
+    
+        // Ratebutton-Listener mit Übergabe der Zahl
+        guessButton.addEventListener('click', () => {
+          testNumber(guessNumber);
+        });
+        // Input-Listener mit Übergabe der Zahl
+        guessNumber.addEventListener('keypress', (event) => {
+          if (event.key === 'Enter') {
+            testNumber(guessNumber);
+          }
+        });
+    
+        // Seite neu laden um ein neues Spiel anzufangen
+        newGame.addEventListener('click', () => {
+          location.reload(true);
+        });
+    </script>
+</body>
+</html>
