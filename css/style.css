@@ -15,7 +15,7 @@ body {
   color: #0f1a27;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100svh;
 }
 
 /*
